@@ -1,0 +1,49 @@
+* TCP/IP
+- *Bandwidth delay product*
+  - The BDP is the product of a link's throughput in bytes/second, and its RTT latency, in
+    seconds. So the unit is seconds.
+  - The idea is that the BDP is the maximum amount of data you can push onto a link before
+    you can expect to get an acknowledgement.
+  - A BDP > 12500 bytes is called a Long Fat Network (LFN).
+  - If the TCP window is smaller than the BDP, the link is under-utilized.
+- *Congestion control* and *Window sizes*
+  - Congestion control ensures that everyone gets a fair share of the link (or at least
+    that the sender responds appropriately to contention for bandwidth)
+  - Senders and receivers negotiate the size of the amount of un-acked data that can be
+    sent at any time.
+  - The *rwnd* is the maximum amount of data that the receiver can buffer.
+  - The *cwnd* is the amount of data that the sender estimates the link can buffer at any
+    time. It cannot exceed rwnd.
+  - There are many variant algorithms for how to adjust cwnd. They take ACKs, duplicate
+    ACKs and timeout events as input.
+  - TCP *slow start* is the algorithm used during initial link use until a packet loss
+    event is detected. The cwnd starts off at some small multiple of the MSS. It is
+    increased with every ACK received.
+- *Flow control*
+  - Flow control avoids sending at a rate faster than the receiver can handle.
+  - TCP uses a *sliding window* flow control algorithm.
+  - The receiver uses the rwnd to advertise how much data it is willing to continue to
+    buffer.
+  - The sender keeps track of the rwnd-wide window of packets it can send, where the start
+    is the packet with the lowest un-ACKed sequence number.
+  - The window size can be scaled via a negotiated 'window scale' parameter.
+- *Nagle's algorithm*
+  - What to do about an application that sends very small packets?
+  - TCP headers are 40 bytes for IPv4, so overhead can be 100% or more.
+  - Nagle's algorithm basically says to buffer packets on the sender side until an ACK has
+    been received.
+  - If there is un-ACKed data, buffer, if there is not, send now (because the receiver
+    might be waiting for your critical packet!)
+  - However, for large writes (more than one packet) this can be a problem, because the
+    receiver may wait before sending an ACK (ACKs are cumulative, and indicate that all
+    packets before the ACK's sequence number have been received).
+  - And for interactive applications, this isn't great because you care about latency,
+    which Nagle penalises (and packet sizes can be small!).
+  - So often disable Nagling with TCP_NODELAY socket option.
+- *ACKs*
+  - ACKs are cumulative - a sequence number of N means that all packets 0..N have been
+    received.
+  - If a gap in a sequence has been detected, the receiver will retransmit an ACK with the
+    highest previously acknowledged sequence number.
+  - If the receiver receives 3+ ACKs for a sequence number, it will retransmit all packets
+    from N + 1 on.

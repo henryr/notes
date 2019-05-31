@@ -1,0 +1,205 @@
+#+TITLE: Key-value Stores
+
+* *KEY-VALUE STORES*
+** *Cache Craftiness for Fast Multicore Key-Value Storage*
+- 'fast key-valuye database designed for SMP machines'
+- Keeps all data in memory.
+- Data structure is a 'trie-like concatenation of B+-trees'
+  - but what this really means is that the key is split into fixed-length chunks and you search
+    through a B+-tree for the first chunk, which then points you to the B+-tree containing the next
+    chunk, and so on until you see a value.
+  - So rather than compare a full length key many times, compare a fixed-length key more times.  (If
+    a regular B+-tree has log(n) nodes in a search path, a Masstree has O(l.log(n)) - where l is the
+    key length. But the total cost of a comparison in a B+-tree is proportional to the length of the
+    key, so the work done is also O(l.log(n)).
+  - The interesting difference is in the height of the tree. Is there one? The effective branching
+    factor of the trees is the same. But given a set of N unique strings the B+-tree has height
+    O(log(N)). The first tree in a Masstree has to include the same number of unique strings and has
+    height O(log(N)) as well. So, in the worst case, does the next one, and the one after that.
+  - But if the strings share a common prefix, the root masstree has just one entry, and so does the
+    next until you find the point of divergence; if that's contained within just one slice of the
+    key then you have only one tree _with constant-time key comparison_, for a complexity of O(l +
+    log(N)) vs the B+-tree's O(l.log(N)).
+  - In truth it seems quite hard to 'fill' a masstree - you need *lots* of strings which have a
+    common prefix up to level X and then diverge. So in practice maybe some levels of the tree
+    always collapse, giving a constant factor reduction.
+- Individual nodes therefore have a fixed-length key. If we make that fit in a cache line we have
+  extremely efficient comparisons (even better if we can do it with SIMD!). 64 bytes => 8 keys at a
+  time in a cache line
+- A tree node with 15-way fanout (8*15 bytes for keys, plus links etc) can be fit into 256 bytes or
+  four cache lines.
+  - Looks like they could have optimized interior and border nodes separately?
+- "Masstree's performance is dominated by the latency of fetching tree nodes from DRAM" -> more
+  nodes are fetched than for a B+-tree, but each B+-tree node is fatter (because it might contain
+  the whole string? or a suffix) so the amount of memory fetched for each is probably a wash.
+- Concurrency control is a mixture of locks and retries:
+  - Writer-writer concurrency control is lock-based and relatively traditional. One note is that locks
+    aren't held very long (because all nodes are in memory) so cost of acquiring lock dominates; this
+    is also true of compare-and-swap even in the uncontended case.
+  - Writer-reader coordination is optimistic:
+    - Updates use atomic writes, not "some unholy mixture"
+    - Inserts at the border are interesting -
+  - Permutation field at the border:
+    - 16 four-bit subfields, 15 of which contain some permutation of 0-15.
+    - So perm[i] is the index in keys of the i^th key in ascending order.
+
+    - So can be published in one 64-bit write. You can 'insert' the new key at the end of the keys
+      array, rewrite the permutation and then publish it, no reader will read the new key until the
+      permutation is updated.
+
+    - I wonder if instead of perm[i] == index, you could have perm[i] = the 0-15 index of the i^th
+      sorted key. Then you can write the new perm with SIMD (15 * 4-bit additions, won't overflow
+      because all value are guaranteed to be < 15 if there's room to insert). But possibly just as
+      fast to rewrite with a loop.
+
+  - To create a new layer, replace a key with a next-layer pointer. Since this is two separate writes
+    in masstree (layer-or-pointer bit, plus actual value), need to mark key as 'unstable', then write
+    the next layer pointer then the marker. Readers seeing 'unstable' will retry. Q: When do they
+    check unstable - after they read? No - before. 'unstable' replaces link-or-value. Hm, but how to
+    avoid reading "value -> <actual link>"? Details are slight, and looks like actual implementation
+    has moved away.
+
+- "More than 30% of the cost of a Masstree lookup is in computation (as opposed to DRAM waits)"
+  Key lookup is linear search, which performs the same or better than binary search thanks to
+  locality effects.
+
+- Evaluation
+
+  - Factor analysis shows cost of supporting certain Masstree features by building systems that do
+    not support that particular feature.
+
+    - Shows that cost of supporting variable-length keys is minimal over a fixed-size B-tree
+
+    - Keys with common prefixes have high throughput even as key length increases, over B-trees which
+      fall-off.
+
+    - Range queries appear inherently expensive, because otherwise could use a hash table. A hash
+      table performs about 2.5x better. (Memcached comparison makes this clear - outperforms on a
+      pure 'get' workload, but range gets are not supported)
+** *MICA: A Holistic Approach to Fast In-Memory Key-Value Storage*
+- Key-value store that supports only put and get
+- Three basic design considerations:
+  - Bypass kernel with userspace UDP via DPDK
+  - New data structures that have simple memory management and good cache efficiency
+  - Scalable and fast via partitioning load across cores and steering incoming requests to exactly
+    one core. (So no multiget either)
+- Parallel data access
+  - i.e. how to take advantage of multiple cores
+  - make design as embarassingly parallel as possible
+    - seems like it should be easy, but paper describes some devils
+  - Concurrent writes don't scale thanks to cache effects, so consider exclusive access.
+  - Challenge is managing skew
+  - MICA always avoids concurrent writes, can serve reads from different cores if load is extremely
+    skewed.
+  - Burst IO delivers packets to each core in bursts
+    - Argument is that more loaded partitions do IO less often, so read larger batches, which means
+      less IO overhead, which apparently helps to eliminate overhead from skew
+  - Need to direct requests to their partition's core. Doing this in software adds coordination
+    overhead, so needs to be in hardware. But right now steering APIs don't support
+    application-level packet inspection. So have the client compute the sterring key as the UDP
+    destination port (seems reasonable, individual servers do not lose or gain cores).
+- Data structures
+  - In cache mode, uses circular logs indexed by a 'lossy' hash index.
+    - Each hash bucket contains 15 tags (fits into 128 byte, ie. two cache lines)
+    - Each index entry contains a _different_ tag, and the item fofset within the log.
+    - Eviction based on age - most behind the tail of the log. Could be LRU instead.
+  - In store mode, can't use circular log because of overwriting.
+    - Instead uses a freelist, and after allocation makes a new block out of any left over space.
+    - Empty adjacent blocks are merged.
+    - Items are indexed by the same hash table as for cache mode, but instead of evicting-on-full,
+      the cache stores an extra pointer to a 'spare' bucket.
+- MICA has two operating modes:
+  - Exclusive Read Exclusive Write (EREW): only one core can read or write a particular key
+  - Concurrent Read Exclusive Write (CREW): any core may serve reads for a key, but only one may
+    write.
+- MICA also has two 'semantic' modes:
+  - Store: act as store of truth, keep keys and values until user removes them
+  - Cache: evict items from memory as capacity is reached.
+  - Question: what value is there in having two modes? (Beyond showing that techniques work in more
+    than one use case)
+- So this is a paper about holistically making some design decisions - the most significant of which
+  appears to be partitioning across cores to enable steering.
+- Although this is nominally a follow-on from Masstree, it's real ancestor appears to be the MemC3
+  work.
+- Evaluation:
+  - Masstree benefits from switch to MICA's network stack
+- Notes:
+  - Masstree can't be partitioned because of range-query support, and would use different data
+    structures if it could (no need for tree lookup for point queries)
+- TODO : Compare against memc3
+** *The Bw-tree: A B-tree for New Hardware Platforms*
+-
+** *The Adaptive Radix Tree: ARTful Indexing for Main-Memory Databases*
+- Index structures are a bottleneck for main-memory databases
+- Modern hardware is important: particularly caches.
+- Binary trees terrible for cache performance; hash tables good performance but no range scans.
+  - One new point is that binary trees can't be predicted easily, so modern CPU pipelines stall
+- Existing cache-sensitive indexes can't support incremental updates cheaply
+- Hash tables also bad because of occasional O(n) growth
+- Tries / digital tree / radix trees are promising because they have search complexity of O(k),
+  independent of n.
+  - Another advantage - keys are stored lexicographically so range queries are possible. Need support
+    of this for all data types though: this paper shows how for many data types.
+- Tries tradeoff space efficiency vs height by controlling their fanout globally (i.e. high fan-out
+  can mean low occupancy of the array of child pointers)
+- Adaptive radix tree (ART) changes the representation of internal nodes depending on how many
+  actual children a node has.
+  - The 'span' is the number of bits for a single character or digit
+  - As the span increases linearly, the amount of possible children per node increases exponentially
+    (2^s, one per 'letter' in an alphabet of width 'span').
+  - But the height of the tree decreases only linearly (height is k / s).
+  - So ART tries to reduce wasted space consumption. In limit, there is no wasted space (as n ->
+    2^k).
+  - Rather than resize nodes after each update, have a few node types and switch between them at
+    well defined boundaries.
+- Node types:
+  - Node4: Up to 4 child pointers - array of length 4 for keys, and same length for
+    pointers. Maximum wasted space is 3 key / pointer entries.
+  - Node16: 5->16 child pointers. Keys and pointers also stored in separate arrays. Key search is
+    either binary search or SIMD comparison.
+  - Node48: 17->48 child pointers. Keys are not explicitly stored, instead 256 element array is
+    used, indexed by the current key byte. That array indexes a second array of up to 48 pointers
+    (note that pointer storage < key storage, but keys are one byte each). Each array index requires
+    only 6 bits - although paper pads to one byte for simplicity.
+  - Node256: 49->256 entries. Array of 256 pointers, indexed by key byte.
+- Leaf nodes:
+  - Got to store the values somewhere! Paper describes three options:
+    - Single-value leaves - store one value in leaf node, done. But requires another pointer chase
+      to get to it.
+    - Multi-value leaves: values are stored in one of four different leaf node types, just like
+      internal nodes but contain values instead of pointers. But requires keys all be the same
+      length (i.e. terminate here).
+    - Combined pointer / value slots: pointers in internal nodes can either store pointer or value,
+      use one bit to distinguish.
+- Lazy expansion
+  - Save on height if inner nodes
+** *Anna: a KVS For Any Scale*
+- Hardware is getting more dense, and cloud is scaling up, so need software that can run at any
+  scale.
+- Four design requirements:
+  1. Data scaling => partitioning of the key space, across nodes and cores
+  2. Multi-master replication required to concurrently serve puts and gets against a single key from
+     multiple threads.
+  3. Maximum hardware utilization and performance => wait-freedom (is wait-free necessarily
+     performant?)
+  4. Wide range of application semantics require a unified implementation
+- The requirements feel a little cherry-picked for the implementation.
+- Anna is a KVS that meets performance goals at multiple scales and consistency levels.
+- Uses coordination-free actors, each with pirvate memory, running one per core.
+- Actors never coordinate.
+- Replica consistency is provided in new way: lattice composition implements coordination-free
+  consistency. Design patter is uniform across threads, machines and data centers.
+- Claims:
+  1. coordination free actors provide excellent performance at all scales, besting state-of-the-art
+     lock-free shared memory implementations.
+  2. lattices can be used to implement full-range of coordination-free consistency models.
+  3. validated against systems designed for different scale points; performance is competitive at
+     two scales while offering wider range of consistency levels.
+- Table 1: lists lots of other systems, the vast majority of which support linearizable reads and
+  writes at the strongest level. Three of them are weaker: COPS, CouchDB and Riak are eventually
+  consistent stores. Anna's strongest level is Eventual. *Q: Are those the ones benchmarked
+  against?*
+- Also table 1: very few systems support multi-key consistency. Anna supports read committed, read
+  uncommitted consistency levels. *This is an advantage, mostly*.
+- Lattices as a programming model: lattices have the property of order-independent merging, so that
+  operations may be performed in any order, and grouped in any configuration, without

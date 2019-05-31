@@ -1,0 +1,76 @@
+#+TITLE: Research
+#+FILETAGS: reading
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+
+* Blog topics
+:PROPERTIES:
+:CATEGORY: blog
+:END:
+** Consensus-in-the-datacenter
+- NOPaxos (OSDI 2016)
+- NSDI 2018 paper
+- Eris (SOSP 2017)
+** Chain replication
+- 2004 paper
+- CRAQ
+- HDFS
+- NSDI 2018 paper
+- Hyperdex (?)
+** ML processing frameworks
+- Tensorflow
+- Ray
+** Actors
+- Orleans
+- Ray
+** Causal consistency
+- Megastore
+- Don't settle for eventual: scalable causal consistency for wide-area storage with COPS
+- Bolt-on cauasal consistency
+- MDCC: multi-data center consistency
+** Consensus
+- Paxos
+  - and variants: fast paxos, vertical paxos
+- Egalitarian Paxos
+- Flexible Paxos
+- NOPaxos
+- Two-level wide-area protocols (2PC + Paxos)
+  - Spanner
+  - Consistent transactions w/inconsistent state
+- Heidi Howard's work
+** Stream processing
+- Discretized streams (SOSP 2013)
+- Structured streaming (SIGMOD 2018)
+- StreamBox (ATC 2017)
+- Drizzle (SOSP 2017)
+- Differential Dataflow (CIDR 2015)
+- Flink
+  - Lightweight async snapshots
+  - Stream and batch processing single engine
+  - State mgmt in Apache Flink
+- The Dataflow Model (Google, VLDB 2015)
+- Streamscope (NSDI 2016)
+
+
+* Topics and links
+** TLA
+- learntla.com
+- https://pron.github.io/posts/tlaplus_part1
+
+** Azure
+- Service fabric
+- ADLS
+
+** CPU blog
+https://dendibakh.github.io/notes/
+** Chandy-Lamport
+https://en.wikipedia.org/wiki/Chandy-Lamport_algorithm
+** Corfu et. al.
+** Distributed control systems
+* Courses
+** MIT dist systems readings
+- http://nil.csail.mit.edu/6.824/2017/schedule.html
+** MIT perf engineering
+- https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-172-performance-engineering-of-software-systems-fall-2010/video-lectures/
+
+** Berkeley great ideas in computer architecture:
+http://inst.eecs.berkeley.edu/~cs61c/fa18/

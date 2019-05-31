@@ -1,0 +1,19 @@
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+#+TITLE: Distributed Systems Theory
+
+** Consensus vs RW register
+Why is consensus harder than RW register. (RW is solvable in fail-stop, consensus is not).
+Intuition: consensus requires 'stickiness' of value; i.e everyone needs to agree on which
+value to read.
+
+But FLP says that even just one process achieving consensus is impossible. Is that equivalent
+to saying that one process can correctly read from a RW register? No - idea is that some process
+decides, but no other processes may *incorrectly* decide, i.e. only liveness needed for one node.
+With RW, impossible to prevent other processes getting wrong decision.
+
+For example, consider a quorum system. One process writes to all N nodes value '1', some other process
+writes '0' to all N. '1' gets to N/2 nodes first, and '0' gets to the other N/2. Both hear back from the
+other half about the other written value, but does not see quorum so doesn't know how to decide who wins.
+
+Then neither proposer can decide. They could retry to all missed nodes, and assert that only the larger
+value wins, but what if the proposer fails?

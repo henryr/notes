@@ -1,0 +1,47 @@
+* *Boyer-Moore Majority Voting Algorithm*
+- Count the vote that is the majority in a set in O(n) time, O(1) space.
+- Idea is to sweep through the set, keeping track of (candidate, counter).
+- The counter is updated if the current element == candidate, and decremented otherwise.
+- If the counter is 0, the next element determines the candidate.
+- for (int v: votes) {
+    if (count == 0) {
+      candidate = v;
+      ++count;
+    } else if (candidate == v) {
+      ++count;
+    } else {
+      --count;
+    }
+  }
+- The intuition is that, whenever you see the majority vote, it will do one of two things:
+  - decrement the counter of a spurious vote
+  - increment its own counter
+- and that however high the current candidate vote is, there are always enough remaining
+  true votes to decrement it to 0 and register one count for the true vote.
+- Base case: first floor(n/2) elements are A and remaining ceil(n/2) elements are B. Then
+  B will dominate A.
+- Then: imagine that the first element is a B, followed by floor(n/2) As. The count will
+  be floor(n/2) - 1 for A. There are ceil(n/2) - 1 Bs left, so the count after will be
+  ceil(n/2) - floor(n/2) == 1 for B. This follows for all initial size runs of B.
+
+* *Levenstein distance*
+- Compute the number of character insertions, deletions or changes it would take to change
+  one string into another.
+- So 'cat' to 'cake' would have an edit distance of 2.
+- Insight is that min distance L(A[n], B[n]) between two strings A[n] and B[m] is the minimum of:
+  - L(A[n-1], B[m]) + 1
+  - L(A[n], B[m-1]) + 1
+  - L(A[n-1], B[m-1]) + M(A[n], B[n])
+    - where M(A[n], B[n]) is 1 iff A_n == B_n. and 0 otherwise
+- Why? Consider first two cases. If we can go from 'ca' to 'cake' in two moves, we can
+  _also_ go from 'cat' to 'cake' in two moves, but the first move is replace, not add.
+  - But that's not the min. We can do better by looking at L('cat', 'cak'), which is one
+   move, and then making the extra move to add 'e' to the end.
+  - Finally there's the possibility that we can get from 'ca' to 'cak' in one move if 't'
+    == 'e', but it doesn't.
+- So solve via dynamic programming, building from L("", B[0]) == 1 and L(A[0], "") == 1
+  and L("", "") == 0.
+
+* TODO *Knapsack problem*
+
+* TODO *Huffman-encoding*

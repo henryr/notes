@@ -1,0 +1,220 @@
+#+FILETAGS: research
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+
+* TODO In-depth OOO execution details
+** TODO Tomosuolo algorithm
+** TODO What's a reservation station?
+* *Modern Microprocessors - A 90-minute guide*
+- http://www.lighterra.com/papers/modernmicroprocessors/
+** Pipelining and instruction-level parallelism
+  - Instructions executed in pipeline.
+  - Typical four stage pipeline:
+    - Fetch instruction from memory
+    - Decode instruction
+      - this means decompose instruction into microcode, compute jump target, read
+        register values into latches, etc.
+    - Execute instruction
+    - Writeback results to registers, memory etc.
+  - With a full pipeline, processor will retire one instruction every cycle
+    - Clocks-per-instruction (CPI) = 1
+  - Pipeline stages are linked by latches which are synchronized by clock signal.
+  - Two consecutive instructions A and B, where B depends on output of A:
+    - B would be at EXECUTE stage when A is performing WRITEBACK
+    - So if B needs output of A, pipeline has to stall for one clock
+    - Instead, pipeline can write results of execute to latch inputs of B's execute phase
+      - (and also from writeback, to avoid having to read registers)
+** Deeper pipelines - *superpipelining*
+  - Clock speed limited by length of slowest stage in pipeline (so makes sense to make
+    pipeline stages short)
+  - This means more cycles per instruction, but more cycles per second so higher
+    throughput
+  - Modern pipelines are about 15-20 stages deep
+    - Pentium 4 went nuts with 30+ stages
+    - x86 processors have to do more work to support CISC instruction set than RISC CPUs.
+  - Remember - deep pipelines -> higher clock speed
+** Multiple issue - *superscalar*
+ - Lots of different functional units, not all in use for a given instruction (e.g. ALU,
+   FPU). Why not issue multiple instructions to take advantage of idle hardware?
+ - Now fetch / decode stages need to be able to do multiple instructions in parallel.
+ - Might be able to retire more than one instruction per clock (i.e. CPI < 1)
+ - "issue width" -> Number of instructions in flight at one time.
+ - Virtually every processor is superpipelined and superscalar, so just called superscalar
+   for short.
+** Explicit parallelism - VLIW
+- Idea is to design instruction set to explicitly group instructions to be executed in
+  parallel.
+- i.e. instructions themselves indicate to CPU that there are few or no dependencies.
+- Instructions are 128 bits or more, hence "Very Long Instruction Word"
+- Fetch and decode happens once every word, but execute / writeback happens multiple times
+  per instruction.
+- No need for parallel fetch or decode, so simpler.
+- Most designs not "interlocked", i.e. no dependency checking is done between instructions.
+  - As a result, compiler has to insert manual NOPs to stall pipeline between dependent
+    instructions.
+  - Not clear why - maybe complexity of dependency checking for VLIWs is higher?
+  - Or maybe dependency checking happens in frontend and complexity savings of VLIW would
+    be moot with it?
+- Itanium was VLIW. GPU shader chips are sometimes VLIW.
+
+** Instruction dependencies and latencies
+- Why not build 50-stage pipeline which issues 20 instructions per clock?
+- Answer: dependencies.
+- In a long pipeline, the number of stages between starting EXECUTE and results being
+  available can be very high. That is the number of clock cycles that dependent
+  instructions would need to be stalled for.
+- So length of pipeline eventually diminishes its returns.
+** Branches and branch prediction
+- Another problem for pipelining. CPU doesn't know which instruction is next, so has to
+  stall FETCH until previous instruction writes IP.
+- So processor guesses based on branch predictor. Output of speculated instructions not
+  committed until previous instruction is retired (I think this doesn't require stalling
+  though - previous instruction will be at WRITEBACK when current instruction is in
+  EXECUTE, so WRITEBACK of current instruction will know whether or not to discard
+  results)
+- Misprediction penalty can be very high, as it means an entire pipeline stall.
+** Eliminating branches with predication
+- If target of branch is basically one instruction, possible to have that instruction
+  combined with branch logic, so no speculation required.
+- e.g. cmovle d, b ; if result of compare is <=, b = d
+  - executes in one instruction, no ambiguity about fetching next instruction
+  - I suppose there's still a one-cycle penalty if branch not taken because nothing is
+    retired usefully from cmovle.
+- _Larger example_:
+  cmp a, 7
+  mov c, b
+  cmovle d, b
+  - Means if (a <= 7) b =d else b = c.
+  - Execute the 'else' branch *whatever* (mov c, b), and then overwrite it using
+    conditional move. This increases parallelism - cmp and mov can be executed in parallel
+    as only the cmovle has a dependency on either.
+** Instruction scheduling, register renaming & OOO
+- If there are bubbles in the pipeline, what can be done to put those idle stages to good
+  work? One possibility - issue instructions *Out Of Order* so that while one instruction
+  is stalled, others can execute.
+- One way to do this is to reorder in the hardware at runtime. Decode / dispatch logic
+  must be extended to look at groups of instructions and dispatch them as best it can
+  given possible dependencies. This is *Out Of Order Execution* or *OOO*.
+  - To keep track of dependencies between instructions, *rename registers* so that hazards
+    are explicit (and reduce false-positives where there's benign dependencies on same
+    register).
+  - OOO, dependency analysis, register renaming add a lot of complex logic - making CPU
+    larger, hotter, harder to design and more power-hungry.
+  - But OOO means that software need not be recompiled to get more fine-grained
+    parallelism.
+- Alternatively: have compiler rearrange instructions. Processor can be *in-order* on the
+  assumption that the compiler gives the best instruction stream.
+  - Other advantages - compiler can see further down program than hardware, and can
+    speculate down multiple branches (CPUs can typically do just one).
+** The _Brainiac Debate_
+- Is OOO really worth it?
+  - *Brainiacs* vs *speed-demons*
+    - Braniacs complex, clever
+    - Speed-demons simple, smaller
+      - (Speed-demons could run at higher clock speeds, but clock now limited by power and
+        thermal issues)
+- Speed-demons can usually fit more cores on a chip. So are 4 brainiacs faster than 8
+  speed-demons?
+- Debate is ongoing - benefits and costs of OOO have been overstated in past.
+  - Powerl, clock overheads of OOO have been reduced by engineering
+  - Chip area is still an issue.
+  - Effectiveness of OOO surprisingly disappointing - only maybe 20-40% improvement over
+    in-order design.
+    - *"The dirty little secret of OOO is that we are often not very much OOO at all"*
+- Vendors have often gone down one path, then switched.
+  - For example, DEC Alpha and MIPS: speed-demon -> brainiac
+  - Sparc moved from brainiac -> speed-demon
+  - Intel most interesting:
+    - x86 has to be a little bit brainiac due to complexities of architecture
+    - Pentium Pro was full brainiac.
+    - Then AMD wars turned focus to speed at all cost, and Pentium 4 was highly
+      speed-demon
+      - Pentium 4 had 20-30 stage pipeline to get up to 3.8GHz (!!)
+    - Itanium was speed-demon, hoping for smart-compilers
+    - However, Itanium failed, Pentium 4 had heat and power issues and was beaten by
+      Athlons at roughly half the clock speed
+    - So Intel went brainiac on Core processors.
+** The Power Wall & The ILP Wall
+- Power usage goes up faster than clock speed
+- W goes up proportional to V*V, and V goes up with clock speed because transistors need
+  more power to meet higher switching requirements
+- Result is that 30%+ clock speed can double power requirements (and double heat produced)
+- So just pumping up clock speed can't work forever
+- But neither can going full brainiac - there isn't that much ILP in a single program..
+  - Average ILP of modern CPU running SPECint is < 2 instructions per cycle (> 0.5 CPI)
+** What about x86?
+- x86 instruction set is CISC and messy - complex addressing modes and not many registers
+  makes it hard to parallelize instructions because false-positives on dependencies
+- So *dynamically decode* x86 instructions into simple, RISC-like micro-instructions and
+  execute using simple RISC-style core
+  - x86 instructions typically decode into 1, 2 or 3 micro-ops.
+  - Static instruction scheduling might be less effective because compiler can't see into RISC core.
+  - Can't fix small register set this way.
+  - Pentium Pro was first Intel chip to do this; today all x86 processors do.
+- Some recent chips store uops in a small cache to avoid retranslating during loops.
+  - So pipeline stages can be skipped; e.g. Haswell is a 14/19 stage processor. 14 when
+    running from uop cache, 19 when not.
+- This makes talking about the issue width of a CPU a bit tricky (because width should be
+  measured in uops not instructions)
+- Even more tricky - some uops get 'fused' into a single uop
+  - Presumably this reduces register pressure, and increases uop throughput
+  - Per Agner Fog (http://www.agner.org/optimize/microarchitecture.pdf, pg 107) - fused
+    uops act as one instruction everywehere but during execution (where they are sent to
+    different execution units independently)
+** Threads - SMT, Hyper-Threading and Multi-Core
+- Since ILP is actually rather limited, maybe we can take instructions from some other
+  thread?
+- Multiplex more than one thread onto a single core.
+- Requires duplicating state tracking part of core (e.g. instruction pointer, registers,
+  TLB etc), but not the large parts like decoders, dispatch logic etc.
+  - Overhead is ~10%
+- Since no dependency between threads, there's lots of parallelism available.
+- Except...
+  - Not always lots of CPU-bound threads running at same time
+  - Threads share the same cache
+  - Other resources also shared (e.g. functional units) - if one thread saturates all of a
+    functional unit, no parallelism available for other thread (e.g. heavy FPU workloads)
+- So SMT could actually be worse than single-thread perf. But usually a big win in context
+  of memory latencies etc.
+** More cores or wider cores?
+- Why build multiple cores if an SMT design would be better?
+  - Very wide superscalar designs scale very badly
+  - For example, dispatch logic scales with square of issue width, because you have to
+    compare n*n instruction pairs to be sure about dependencies.
+  - Very wide superscalar also requires multiple ports on register files and caches, to
+    allow for parallel access.
+  - All this implies more wiring, larger chip size, etc.
+  - So a 10-issue core would possibly be larger and slower than 2*5-issue cores.
+- So there's a sweet spot between SMT width and number of cores.
+  - e.g. core2 -> 4 cores, 6-issue OOO brainiac cores
+  - or Niagara 3 -> 16 simple 2-issue in-order cores
+  - or Bulldozer - shared, SMT-style front-end for a pair of cores, but back-end is
+    unshared for integers, and shared for floating-point.
+- There are lots of transistors (~6 billion) available. So lots of room to fit logic on a
+  chip.
+  - Although now pressure to integrate more into chip, like SoC.
+** Data Parallelism - SIMD Vector Instructions
+- Along with ILP and SMT, a further way to get parallelism is *data parallelism*.
+- i.e. run one instruction on a group of data values in parallel.
+- SIMD instructions can pack multiple values into single registers and operate on them
+  using a single register operation.
+** Memory and the memory wall
+- Access to main memory is very slow.
+- Reading a byte can cost ~20 cycles of main memory bus, which can lag CPU clock by a
+  factor of three (e.g. 800MHz to 2400MHz)
+- So effective cost can be 60 cycles (plus cache checking delay) or more of CPU clock to
+  access main memory.
+- As ratio of clock speed to bus speed gets larger, delay gets worse.
+** Caches and the memory hierarchy
+- Caches hide latency. For example, on a core i4:
+  - L1 cache -> 4 cycles
+  - L2 cache -> 12 cycles
+  - L3 cache -> 21 cycles
+  - RAM -> 120 cycles
+- Temporal and spatial locality make caches highly effective.
+
+
+* *FPGA architecture*
+** Reprogrammable logic gates
+   Logic gates are look-up tables (truth tables) which can be reprogrammed
+   Connected by fixed-width bus
+   Very high parallelism
