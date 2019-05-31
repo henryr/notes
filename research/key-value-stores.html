@@ -1,0 +1,548 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2019-05-30 Thu 23:27 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Key-value Stores</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Henry Robinson" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Key-value Stores</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgd01cfb6">1. <b>KEY-VALUE STORES</b></a>
+<ul>
+<li><a href="#org59d36aa">1.1. <b>Cache Craftiness for Fast Multicore Key-Value Storage</b></a></li>
+<li><a href="#org19ae4ba">1.2. <b>MICA: A Holistic Approach to Fast In-Memory Key-Value Storage</b></a></li>
+<li><a href="#org9e7dbb7">1.3. <b>The Bw-tree: A B-tree for New Hardware Platforms</b></a></li>
+<li><a href="#org4fd8330">1.4. <b>The Adaptive Radix Tree: ARTful Indexing for Main-Memory Databases</b></a></li>
+<li><a href="#orgad8e6fc">1.5. <b>Anna: a KVS For Any Scale</b></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd01cfb6" class="outline-2">
+<h2 id="orgd01cfb6"><span class="section-number-2">1</span> <b>KEY-VALUE STORES</b></h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org59d36aa" class="outline-3">
+<h3 id="org59d36aa"><span class="section-number-3">1.1</span> <b>Cache Craftiness for Fast Multicore Key-Value Storage</b></h3>
+<div class="outline-text-3" id="text-1-1">
+<ul class="org-ul">
+<li>'fast key-valuye database designed for SMP machines'</li>
+<li>Keeps all data in memory.</li>
+<li>Data structure is a 'trie-like concatenation of B+-trees'
+<ul class="org-ul">
+<li>but what this really means is that the key is split into fixed-length chunks and you search
+through a B+-tree for the first chunk, which then points you to the B+-tree containing the next
+chunk, and so on until you see a value.</li>
+<li>So rather than compare a full length key many times, compare a fixed-length key more times.  (If
+a regular B+-tree has log(n) nodes in a search path, a Masstree has O(l.log(n)) - where l is the
+key length. But the total cost of a comparison in a B+-tree is proportional to the length of the
+key, so the work done is also O(l.log(n)).</li>
+<li>The interesting difference is in the height of the tree. Is there one? The effective branching
+factor of the trees is the same. But given a set of N unique strings the B+-tree has height
+O(log(N)). The first tree in a Masstree has to include the same number of unique strings and has
+height O(log(N)) as well. So, in the worst case, does the next one, and the one after that.</li>
+<li>But if the strings share a common prefix, the root masstree has just one entry, and so does the
+next until you find the point of divergence; if that's contained within just one slice of the
+key then you have only one tree <span class="underline">with constant-time key comparison</span>, for a complexity of O(l +
+log(N)) vs the B+-tree's O(l.log(N)).</li>
+<li>In truth it seems quite hard to 'fill' a masstree - you need <b>lots</b> of strings which have a
+common prefix up to level X and then diverge. So in practice maybe some levels of the tree
+always collapse, giving a constant factor reduction.</li>
+</ul></li>
+<li>Individual nodes therefore have a fixed-length key. If we make that fit in a cache line we have
+extremely efficient comparisons (even better if we can do it with SIMD!). 64 bytes =&gt; 8 keys at a
+time in a cache line</li>
+<li>A tree node with 15-way fanout (8*15 bytes for keys, plus links etc) can be fit into 256 bytes or
+four cache lines.
+<ul class="org-ul">
+<li>Looks like they could have optimized interior and border nodes separately?</li>
+</ul></li>
+<li>"Masstree's performance is dominated by the latency of fetching tree nodes from DRAM" -&gt; more
+nodes are fetched than for a B+-tree, but each B+-tree node is fatter (because it might contain
+the whole string? or a suffix) so the amount of memory fetched for each is probably a wash.</li>
+<li>Concurrency control is a mixture of locks and retries:
+<ul class="org-ul">
+<li>Writer-writer concurrency control is lock-based and relatively traditional. One note is that locks
+aren't held very long (because all nodes are in memory) so cost of acquiring lock dominates; this
+is also true of compare-and-swap even in the uncontended case.</li>
+<li>Writer-reader coordination is optimistic:
+<ul class="org-ul">
+<li>Updates use atomic writes, not "some unholy mixture"</li>
+<li>Inserts at the border are interesting -</li>
+</ul></li>
+<li>Permutation field at the border:
+<ul class="org-ul">
+<li>16 four-bit subfields, 15 of which contain some permutation of 0-15.</li>
+<li>So perm[i] is the index in keys of the i<sup>th</sup> key in ascending order.</li>
+
+<li>So can be published in one 64-bit write. You can 'insert' the new key at the end of the keys
+array, rewrite the permutation and then publish it, no reader will read the new key until the
+permutation is updated.</li>
+
+<li>I wonder if instead of perm[i] == index, you could have perm[i] = the 0-15 index of the i<sup>th</sup>
+sorted key. Then you can write the new perm with SIMD (15 * 4-bit additions, won't overflow
+because all value are guaranteed to be &lt; 15 if there's room to insert). But possibly just as
+fast to rewrite with a loop.</li>
+</ul></li>
+
+<li>To create a new layer, replace a key with a next-layer pointer. Since this is two separate writes
+in masstree (layer-or-pointer bit, plus actual value), need to mark key as 'unstable', then write
+the next layer pointer then the marker. Readers seeing 'unstable' will retry. Q: When do they
+check unstable - after they read? No - before. 'unstable' replaces link-or-value. Hm, but how to
+avoid reading "value -&gt; &lt;actual link&gt;"? Details are slight, and looks like actual implementation
+has moved away.</li>
+</ul></li>
+
+<li>"More than 30% of the cost of a Masstree lookup is in computation (as opposed to DRAM waits)"
+Key lookup is linear search, which performs the same or better than binary search thanks to
+locality effects.</li>
+
+<li>Evaluation
+
+<ul class="org-ul">
+<li>Factor analysis shows cost of supporting certain Masstree features by building systems that do
+not support that particular feature.
+
+<ul class="org-ul">
+<li>Shows that cost of supporting variable-length keys is minimal over a fixed-size B-tree</li>
+
+<li>Keys with common prefixes have high throughput even as key length increases, over B-trees which
+fall-off.</li>
+
+<li>Range queries appear inherently expensive, because otherwise could use a hash table. A hash
+table performs about 2.5x better. (Memcached comparison makes this clear - outperforms on a
+pure 'get' workload, but range gets are not supported)</li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org19ae4ba" class="outline-3">
+<h3 id="org19ae4ba"><span class="section-number-3">1.2</span> <b>MICA: A Holistic Approach to Fast In-Memory Key-Value Storage</b></h3>
+<div class="outline-text-3" id="text-1-2">
+<ul class="org-ul">
+<li>Key-value store that supports only put and get</li>
+<li>Three basic design considerations:
+<ul class="org-ul">
+<li>Bypass kernel with userspace UDP via DPDK</li>
+<li>New data structures that have simple memory management and good cache efficiency</li>
+<li>Scalable and fast via partitioning load across cores and steering incoming requests to exactly
+one core. (So no multiget either)</li>
+</ul></li>
+<li>Parallel data access
+<ul class="org-ul">
+<li>i.e. how to take advantage of multiple cores</li>
+<li>make design as embarassingly parallel as possible
+<ul class="org-ul">
+<li>seems like it should be easy, but paper describes some devils</li>
+</ul></li>
+<li>Concurrent writes don't scale thanks to cache effects, so consider exclusive access.</li>
+<li>Challenge is managing skew</li>
+<li>MICA always avoids concurrent writes, can serve reads from different cores if load is extremely
+skewed.</li>
+<li>Burst IO delivers packets to each core in bursts
+<ul class="org-ul">
+<li>Argument is that more loaded partitions do IO less often, so read larger batches, which means
+less IO overhead, which apparently helps to eliminate overhead from skew</li>
+</ul></li>
+<li>Need to direct requests to their partition's core. Doing this in software adds coordination
+overhead, so needs to be in hardware. But right now steering APIs don't support
+application-level packet inspection. So have the client compute the sterring key as the UDP
+destination port (seems reasonable, individual servers do not lose or gain cores).</li>
+</ul></li>
+<li>Data structures
+<ul class="org-ul">
+<li>In cache mode, uses circular logs indexed by a 'lossy' hash index.
+<ul class="org-ul">
+<li>Each hash bucket contains 15 tags (fits into 128 byte, ie. two cache lines)</li>
+<li>Each index entry contains a <span class="underline">different</span> tag, and the item fofset within the log.</li>
+<li>Eviction based on age - most behind the tail of the log. Could be LRU instead.</li>
+</ul></li>
+<li>In store mode, can't use circular log because of overwriting.
+<ul class="org-ul">
+<li>Instead uses a freelist, and after allocation makes a new block out of any left over space.</li>
+<li>Empty adjacent blocks are merged.</li>
+<li>Items are indexed by the same hash table as for cache mode, but instead of evicting-on-full,
+the cache stores an extra pointer to a 'spare' bucket.</li>
+</ul></li>
+</ul></li>
+<li>MICA has two operating modes:
+<ul class="org-ul">
+<li>Exclusive Read Exclusive Write (EREW): only one core can read or write a particular key</li>
+<li>Concurrent Read Exclusive Write (CREW): any core may serve reads for a key, but only one may
+write.</li>
+</ul></li>
+<li>MICA also has two 'semantic' modes:
+<ul class="org-ul">
+<li>Store: act as store of truth, keep keys and values until user removes them</li>
+<li>Cache: evict items from memory as capacity is reached.</li>
+<li>Question: what value is there in having two modes? (Beyond showing that techniques work in more
+than one use case)</li>
+</ul></li>
+<li>So this is a paper about holistically making some design decisions - the most significant of which
+appears to be partitioning across cores to enable steering.</li>
+<li>Although this is nominally a follow-on from Masstree, it's real ancestor appears to be the MemC3
+work.</li>
+<li>Evaluation:
+<ul class="org-ul">
+<li>Masstree benefits from switch to MICA's network stack</li>
+</ul></li>
+<li>Notes:
+<ul class="org-ul">
+<li>Masstree can't be partitioned because of range-query support, and would use different data
+structures if it could (no need for tree lookup for point queries)</li>
+</ul></li>
+<li>TODO : Compare against memc3</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org9e7dbb7" class="outline-3">
+<h3 id="org9e7dbb7"><span class="section-number-3">1.3</span> <b>The Bw-tree: A B-tree for New Hardware Platforms</b></h3>
+<div class="outline-text-3" id="text-1-3">
+<ul class="org-ul">
+<li></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org4fd8330" class="outline-3">
+<h3 id="org4fd8330"><span class="section-number-3">1.4</span> <b>The Adaptive Radix Tree: ARTful Indexing for Main-Memory Databases</b></h3>
+<div class="outline-text-3" id="text-1-4">
+<ul class="org-ul">
+<li>Index structures are a bottleneck for main-memory databases</li>
+<li>Modern hardware is important: particularly caches.</li>
+<li>Binary trees terrible for cache performance; hash tables good performance but no range scans.
+<ul class="org-ul">
+<li>One new point is that binary trees can't be predicted easily, so modern CPU pipelines stall</li>
+</ul></li>
+<li>Existing cache-sensitive indexes can't support incremental updates cheaply</li>
+<li>Hash tables also bad because of occasional O(n) growth</li>
+<li>Tries / digital tree / radix trees are promising because they have search complexity of O(k),
+independent of n.
+<ul class="org-ul">
+<li>Another advantage - keys are stored lexicographically so range queries are possible. Need support
+of this for all data types though: this paper shows how for many data types.</li>
+</ul></li>
+<li>Tries tradeoff space efficiency vs height by controlling their fanout globally (i.e. high fan-out
+can mean low occupancy of the array of child pointers)</li>
+<li>Adaptive radix tree (ART) changes the representation of internal nodes depending on how many
+actual children a node has.
+<ul class="org-ul">
+<li>The 'span' is the number of bits for a single character or digit</li>
+<li>As the span increases linearly, the amount of possible children per node increases exponentially
+(2<sup>s</sup>, one per 'letter' in an alphabet of width 'span').</li>
+<li>But the height of the tree decreases only linearly (height is k / s).</li>
+<li>So ART tries to reduce wasted space consumption. In limit, there is no wasted space (as n -&gt;
+2<sup>k</sup>).</li>
+<li>Rather than resize nodes after each update, have a few node types and switch between them at
+well defined boundaries.</li>
+</ul></li>
+<li>Node types:
+<ul class="org-ul">
+<li>Node4: Up to 4 child pointers - array of length 4 for keys, and same length for
+pointers. Maximum wasted space is 3 key / pointer entries.</li>
+<li>Node16: 5-&gt;16 child pointers. Keys and pointers also stored in separate arrays. Key search is
+either binary search or SIMD comparison.</li>
+<li>Node48: 17-&gt;48 child pointers. Keys are not explicitly stored, instead 256 element array is
+used, indexed by the current key byte. That array indexes a second array of up to 48 pointers
+(note that pointer storage &lt; key storage, but keys are one byte each). Each array index requires
+only 6 bits - although paper pads to one byte for simplicity.</li>
+<li>Node256: 49-&gt;256 entries. Array of 256 pointers, indexed by key byte.</li>
+</ul></li>
+<li>Leaf nodes:
+<ul class="org-ul">
+<li>Got to store the values somewhere! Paper describes three options:
+<ul class="org-ul">
+<li>Single-value leaves - store one value in leaf node, done. But requires another pointer chase
+to get to it.</li>
+<li>Multi-value leaves: values are stored in one of four different leaf node types, just like
+internal nodes but contain values instead of pointers. But requires keys all be the same
+length (i.e. terminate here).</li>
+<li>Combined pointer / value slots: pointers in internal nodes can either store pointer or value,
+use one bit to distinguish.</li>
+</ul></li>
+</ul></li>
+<li>Lazy expansion
+<ul class="org-ul">
+<li>Save on height if inner nodes</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgad8e6fc" class="outline-3">
+<h3 id="orgad8e6fc"><span class="section-number-3">1.5</span> <b>Anna: a KVS For Any Scale</b></h3>
+<div class="outline-text-3" id="text-1-5">
+<ul class="org-ul">
+<li>Hardware is getting more dense, and cloud is scaling up, so need software that can run at any
+scale.</li>
+<li>Four design requirements:
+<ol class="org-ol">
+<li>Data scaling =&gt; partitioning of the key space, across nodes and cores</li>
+<li>Multi-master replication required to concurrently serve puts and gets against a single key from
+multiple threads.</li>
+<li>Maximum hardware utilization and performance =&gt; wait-freedom (is wait-free necessarily
+performant?)</li>
+<li>Wide range of application semantics require a unified implementation</li>
+</ol></li>
+<li>The requirements feel a little cherry-picked for the implementation.</li>
+<li>Anna is a KVS that meets performance goals at multiple scales and consistency levels.</li>
+<li>Uses coordination-free actors, each with pirvate memory, running one per core.</li>
+<li>Actors never coordinate.</li>
+<li>Replica consistency is provided in new way: lattice composition implements coordination-free
+consistency. Design patter is uniform across threads, machines and data centers.</li>
+<li>Claims:
+<ol class="org-ol">
+<li>coordination free actors provide excellent performance at all scales, besting state-of-the-art
+lock-free shared memory implementations.</li>
+<li>lattices can be used to implement full-range of coordination-free consistency models.</li>
+<li>validated against systems designed for different scale points; performance is competitive at
+two scales while offering wider range of consistency levels.</li>
+</ol></li>
+<li>Table 1: lists lots of other systems, the vast majority of which support linearizable reads and
+writes at the strongest level. Three of them are weaker: COPS, CouchDB and Riak are eventually
+consistent stores. Anna's strongest level is Eventual. <b>Q: Are those the ones benchmarked
+against?</b></li>
+<li>Also table 1: very few systems support multi-key consistency. Anna supports read committed, read
+uncommitted consistency levels. <b>This is an advantage, mostly</b>.</li>
+<li>Lattices as a programming model: lattices have the property of order-independent merging, so that
+operations may be performed in any order, and grouped in any configuration, without</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Henry Robinson</p>
+<p class="date">Created: 2019-05-30 Thu 23:27</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
