@@ -229,6 +229,88 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orge9bf04c">1. <b>Boyer-Moore Majority Voting Algorithm</b></a></li>
+<li><a href="#org1550862">2. <b>Levenstein distance</b></a></li>
+<li><a href="#orge621b04">3. <span class="todo TODO">TODO</span> <b>Knapsack problem</b></a></li>
+<li><a href="#org440f9ca">4. <span class="todo TODO">TODO</span> <b>Huffman-encoding</b></a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orge9bf04c" class="outline-2">
+<h2 id="orge9bf04c"><span class="section-number-2">1</span> <b>Boyer-Moore Majority Voting Algorithm</b></h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li>Count the vote that is the majority in a set in O(n) time, O(1) space.</li>
+<li>Idea is to sweep through the set, keeping track of (candidate, counter).</li>
+<li>The counter is updated if the current element == candidate, and decremented otherwise.</li>
+<li>If the counter is 0, the next element determines the candidate.</li>
+<li>for (int v: votes) {
+  if (count == 0) {
+    candidate = v;
+    ++count;
+  } else if (candidate == v) {
+    ++count;
+  } else {
+    &#x2013;count;
+  }
+}</li>
+<li>The intuition is that, whenever you see the majority vote, it will do one of two things:
+<ul class="org-ul">
+<li>decrement the counter of a spurious vote</li>
+<li>increment its own counter</li>
+</ul></li>
+<li>and that however high the current candidate vote is, there are always enough remaining
+true votes to decrement it to 0 and register one count for the true vote.</li>
+<li>Base case: first floor(n/2) elements are A and remaining ceil(n/2) elements are B. Then
+B will dominate A.</li>
+<li>Then: imagine that the first element is a B, followed by floor(n/2) As. The count will
+be floor(n/2) - 1 for A. There are ceil(n/2) - 1 Bs left, so the count after will be
+ceil(n/2) - floor(n/2) == 1 for B. This follows for all initial size runs of B.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org1550862" class="outline-2">
+<h2 id="org1550862"><span class="section-number-2">2</span> <b>Levenstein distance</b></h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li>Compute the number of character insertions, deletions or changes it would take to change
+one string into another.</li>
+<li>So 'cat' to 'cake' would have an edit distance of 2.</li>
+<li>Insight is that min distance L(A[n], B[n]) between two strings A[n] and B[m] is the minimum of:
+<ul class="org-ul">
+<li>L(A[n-1], B[m]) + 1</li>
+<li>L(A[n], B[m-1]) + 1</li>
+<li>L(A[n-1], B[m-1]) + M(A[n], B[n])
+<ul class="org-ul">
+<li>where M(A[n], B[n]) is 1 iff A<sub>n</sub> == B<sub>n</sub>. and 0 otherwise</li>
+</ul></li>
+</ul></li>
+<li>Why? Consider first two cases. If we can go from 'ca' to 'cake' in two moves, we can
+<span class="underline">also</span> go from 'cat' to 'cake' in two moves, but the first move is replace, not add.
+<ul class="org-ul">
+<li>But that's not the min. We can do better by looking at L('cat', 'cak'), which is one
+move, and then making the extra move to add 'e' to the end.</li>
+<li>Finally there's the possibility that we can get from 'ca' to 'cak' in one move if 't'
+== 'e', but it doesn't.</li>
+</ul></li>
+<li>So solve via dynamic programming, building from L("", B[0]) <code>= 1 and L(A[0], "") =</code> 1
+and L("", "") == 0.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orge621b04" class="outline-2">
+<h2 id="orge621b04"><span class="section-number-2">3</span> <span class="todo TODO">TODO</span> <b>Knapsack problem</b></h2>
+</div>
+
+<div id="outline-container-org440f9ca" class="outline-2">
+<h2 id="org440f9ca"><span class="section-number-2">4</span> <span class="todo TODO">TODO</span> <b>Huffman-encoding</b></h2>
+</div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Henry Robinson</p>

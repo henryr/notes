@@ -1,7 +1,7 @@
 * [.//research/algorithms.org.html](.//research/algorithms.org.html)
 * [.//research/reading.org.html](.//research/reading.org.html)
 * [.//research/key-value-stores.org.html](.//research/key-value-stores.org.html)
-* [.//research/research.html](.//research/research.html)
+* [.//research/algorithms.html](.//research/algorithms.html)
 * [.//research/distributed-sys-theory.org.html](.//research/distributed-sys-theory.org.html)
 * [.//research/hardware.org.html](.//research/hardware.org.html)
 * [.//research/reading.html](.//research/reading.html)
