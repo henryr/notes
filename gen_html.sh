@@ -2,6 +2,7 @@
 
 for i in `find ./ -name *.org`; do
     /Applications/Emacs.app/Contents/MacOS/Emacs $i --batch -f org-html-export-to-html --kill
+    git add $i
 done
 
 rm -f index.md
