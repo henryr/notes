@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2019-06-01 Sat 12:25 -->
+<!-- 2019-06-01 Sat 12:35 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Key-value Stores</title>
@@ -235,25 +235,25 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org5dc1dfb">1. <b>KEY-VALUE STORES</b></a>
+<li><a href="#org9f446b7">1. <b>KEY-VALUE STORES</b></a>
 <ul>
-<li><a href="#org8754155">1.1. <b>Cache Craftiness for Fast Multicore Key-Value Storage</b></a></li>
-<li><a href="#org75db3e8">1.2. <b>MICA: A Holistic Approach to Fast In-Memory Key-Value Storage</b></a></li>
-<li><a href="#org1359f29">1.3. <b>The Bw-tree: A B-tree for New Hardware Platforms</b></a></li>
-<li><a href="#org5931d9c">1.4. <b>The Adaptive Radix Tree: ARTful Indexing for Main-Memory Databases</b></a></li>
-<li><a href="#org7ecd54b">1.5. <b>Anna: a KVS For Any Scale</b></a></li>
+<li><a href="#orgf34773c">1.1. <b>Cache Craftiness for Fast Multicore Key-Value Storage</b></a></li>
+<li><a href="#orgae50620">1.2. <b>MICA: A Holistic Approach to Fast In-Memory Key-Value Storage</b></a></li>
+<li><a href="#org9634d13">1.3. <b>The Bw-tree: A B-tree for New Hardware Platforms</b></a></li>
+<li><a href="#orga746556">1.4. <b>The Adaptive Radix Tree: ARTful Indexing for Main-Memory Databases</b></a></li>
+<li><a href="#org37f9332">1.5. <b>Anna: a KVS For Any Scale</b></a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org5dc1dfb" class="outline-2">
-<h2 id="org5dc1dfb"><span class="section-number-2">1</span> <b>KEY-VALUE STORES</b></h2>
+<div id="outline-container-org9f446b7" class="outline-2">
+<h2 id="org9f446b7"><span class="section-number-2">1</span> <b>KEY-VALUE STORES</b></h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-org8754155" class="outline-3">
-<h3 id="org8754155"><span class="section-number-3">1.1</span> <b>Cache Craftiness for Fast Multicore Key-Value Storage</b></h3>
+<div id="outline-container-orgf34773c" class="outline-3">
+<h3 id="orgf34773c"><span class="section-number-3">1.1</span> <b>Cache Craftiness for Fast Multicore Key-Value Storage</b></h3>
 <div class="outline-text-3" id="text-1-1">
 <ul class="org-ul">
 <li>'fast key-valuye database designed for SMP machines'</li>
@@ -347,8 +347,8 @@ pure 'get' workload, but range gets are not supported)</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org75db3e8" class="outline-3">
-<h3 id="org75db3e8"><span class="section-number-3">1.2</span> <b>MICA: A Holistic Approach to Fast In-Memory Key-Value Storage</b></h3>
+<div id="outline-container-orgae50620" class="outline-3">
+<h3 id="orgae50620"><span class="section-number-3">1.2</span> <b>MICA: A Holistic Approach to Fast In-Memory Key-Value Storage</b></h3>
 <div class="outline-text-3" id="text-1-2">
 <ul class="org-ul">
 <li>Key-value store that supports only put and get</li>
@@ -426,16 +426,16 @@ structures if it could (no need for tree lookup for point queries)</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org1359f29" class="outline-3">
-<h3 id="org1359f29"><span class="section-number-3">1.3</span> <b>The Bw-tree: A B-tree for New Hardware Platforms</b></h3>
+<div id="outline-container-org9634d13" class="outline-3">
+<h3 id="org9634d13"><span class="section-number-3">1.3</span> <b>The Bw-tree: A B-tree for New Hardware Platforms</b></h3>
 <div class="outline-text-3" id="text-1-3">
 <ul class="org-ul">
 <li></li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org5931d9c" class="outline-3">
-<h3 id="org5931d9c"><span class="section-number-3">1.4</span> <b>The Adaptive Radix Tree: ARTful Indexing for Main-Memory Databases</b></h3>
+<div id="outline-container-orga746556" class="outline-3">
+<h3 id="orga746556"><span class="section-number-3">1.4</span> <b>The Adaptive Radix Tree: ARTful Indexing for Main-Memory Databases</b></h3>
 <div class="outline-text-3" id="text-1-4">
 <ul class="org-ul">
 <li>Index structures are a bottleneck for main-memory databases</li>
@@ -498,8 +498,8 @@ use one bit to distinguish.</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org7ecd54b" class="outline-3">
-<h3 id="org7ecd54b"><span class="section-number-3">1.5</span> <b>Anna: a KVS For Any Scale</b></h3>
+<div id="outline-container-org37f9332" class="outline-3">
+<h3 id="org37f9332"><span class="section-number-3">1.5</span> <b>Anna: a KVS For Any Scale</b></h3>
 <div class="outline-text-3" id="text-1-5">
 <ul class="org-ul">
 <li>Hardware is getting more dense, and cloud is scaling up, so need software that can run at any
@@ -542,7 +542,7 @@ operations may be performed in any order, and grouped in any configuration, with
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Henry Robinson</p>
-<p class="date">Created: 2019-06-01 Sat 12:25</p>
+<p class="date">Created: 2019-06-01 Sat 12:35</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
