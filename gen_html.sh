@@ -12,7 +12,7 @@ if [[ $? -eq 0 ]]; then
 fi
 
 for i in `find ./ -name *.org`; do
-    #/Applications/Emacs.app/Contents/MacOS/Emacs $i --batch -f org-html-export-to-html --kill
+    /Applications/Emacs.app/Contents/MacOS/Emacs $i --batch -f org-html-export-to-html --kill
 done
 
 rm -f index.md
