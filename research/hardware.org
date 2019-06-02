@@ -212,7 +212,7 @@
   - RAM -> 120 cycles
 - Temporal and spatial locality make caches highly effective.
 
-TMP
+
 * *FPGA architecture*
 ** Reprogrammable logic gates
    Logic gates are look-up tables (truth tables) which can be reprogrammed
