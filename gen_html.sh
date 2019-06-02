@@ -1,14 +1,17 @@
 #!/bin/bash
 
 for i in `find ./ -name *.org`; do
-    /Applications/Emacs.app/Contents/MacOS/Emacs $i --batch -f org-html-export-to-html --kill
     git add $i
 done
 
-if git diff-index --quiet HEAD --; then
+if git diff-index HEAD --; then
     echo "All done"
     exit 0
 fi
+
+for i in `find ./ -name *.org`; do
+    /Applications/Emacs.app/Contents/MacOS/Emacs $i --batch -f org-html-export-to-html --kill
+done
 
 rm -f index.md
 
