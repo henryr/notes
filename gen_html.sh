@@ -11,9 +11,9 @@ if [[ $? -eq 0 ]]; then
     exit 0
 fi
 
-#for i in `find ./ -name *.org`; do
+for i in `find ./ -name *.org`; do
     #/Applications/Emacs.app/Contents/MacOS/Emacs $i --batch -f org-html-export-to-html --kill
-#done
+done
 
 rm -f index.md
 
