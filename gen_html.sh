@@ -4,7 +4,9 @@ for i in `find ./ -name *.org`; do
     git add $i
 done
 
-if git diff-index HEAD --; then
+git diff-index HEAD --quiet --;
+
+if [[ $? -ne 0 ]]; then
     echo "All done"
     exit 0
 fi
@@ -20,7 +22,9 @@ for i in `find ./ -name *.html`; do
     echo "* [$i]($i)" >> index.md
 done
 
-if ! git diff-index --quiet HEAD --; then
+git diff-index HEAD --quiet --;
+
+if [[ $? -eq 0 ]]; then
     git add index.md
     git commit -m"$(date)" && git push origin gh-pages
 fi
