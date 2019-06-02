@@ -5,6 +5,11 @@ for i in `find ./ -name *.org`; do
     git add $i
 done
 
+if git diff-index --quiet HEAD --; then
+    echo "All done"
+    exit 0
+fi
+
 rm -f index.md
 
 for i in `find ./ -name *.html`; do
