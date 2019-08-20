@@ -4,3 +4,4 @@
 * [.//research/reading.html](.//research/reading.html)
 * [.//research/hardware.html](.//research/hardware.html)
 * [.//research/networking.html](.//research/networking.html)
+* [.//books/books.html](.//books/books.html)
