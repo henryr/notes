@@ -29,7 +29,7 @@
 - MDCC: multi-data center consistency
 ** Consensus
 - Paxos
-  - and variants: fast paxos, vertical paxos
+  - and variants: fast paxos, vertical paxos etc
 - Egalitarian Paxos
 - Flexible Paxos
 - NOPaxos
