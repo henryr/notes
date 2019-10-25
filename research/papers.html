@@ -6,7 +6,7 @@
 <!-- 2019-10-25 Fri 16:43 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>&lrm;</title>
+<title>Books</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="Henry Robinson" />
 <style type="text/css">
@@ -180,6 +180,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
+<link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
 <script type="text/javascript">
 /*
 @licstart  The following is the entire license notice for the
@@ -229,76 +230,37 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
+<h1 class="title">Books</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgae8b2bd">1. TCP/IP</a></li>
+<li><a href="#org8fcdf5e">1. <b>Kraken: Leveraging Live Traffic Tests to Identify and Resolve resource Utilization Bottlenecks in Large-Scale Web Services</b></a></li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orgae8b2bd" class="outline-2">
-<h2 id="orgae8b2bd"><span class="section-number-2">1</span> TCP/IP</h2>
+
+<div id="outline-container-org8fcdf5e" class="outline-2">
+<h2 id="org8fcdf5e"><span class="section-number-2">1</span> <b>Kraken: Leveraging Live Traffic Tests to Identify and Resolve resource Utilization Bottlenecks in Large-Scale Web Services</b></h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
-<li><b>Bandwidth delay product</b>
-<ul class="org-ul">
-<li>The BDP is the product of a link's throughput in bytes/second, and its RTT latency, in
-seconds. So the unit is seconds.</li>
-<li>The idea is that the BDP is the maximum amount of data you can push onto a link before
-you can expect to get an acknowledgement.</li>
-<li>A BDP &gt; 12500 bytes is called a Long Fat Network (LFN).</li>
-<li>If the TCP window is smaller than the BDP, the link is under-utilized.</li>
-</ul></li>
-<li><b>Congestion control</b> and <b>Window sizes</b>
-<ul class="org-ul">
-<li>Congestion control ensures that everyone gets a fair share of the link (or at least
-that the sender responds appropriately to contention for bandwidth)</li>
-<li>Senders and receivers negotiate the size of the amount of un-acked data that can be
-sent at any time.</li>
-<li>The <b>rwnd</b> is the maximum amount of data that the receiver can buffer.</li>
-<li>The <b>cwnd</b> is the amount of data that the sender estimates the link can buffer at any
-time. It cannot exceed rwnd.</li>
-<li>There are many variant algorithms for how to adjust cwnd. They take ACKs, duplicate
-ACKs and timeout events as input.</li>
-<li>TCP <b>slow start</b> is the algorithm used during initial link use until a packet loss
-event is detected. The cwnd starts off at some small multiple of the MSS. It is
-increased with every ACK received.</li>
-</ul></li>
-<li><b>Flow control</b>
-<ul class="org-ul">
-<li>Flow control avoids sending at a rate faster than the receiver can handle.</li>
-<li>TCP uses a <b>sliding window</b> flow control algorithm.</li>
-<li>The receiver uses the rwnd to advertise how much data it is willing to continue to
-buffer.</li>
-<li>The sender keeps track of the rwnd-wide window of packets it can send, where the start
-is the packet with the lowest un-ACKed sequence number.</li>
-<li>The window size can be scaled via a negotiated 'window scale' parameter.</li>
-</ul></li>
-<li><b>Nagle's algorithm</b>
-<ul class="org-ul">
-<li>What to do about an application that sends very small packets?</li>
-<li>TCP headers are 40 bytes for IPv4, so overhead can be 100% or more.</li>
-<li>Nagle's algorithm basically says to buffer packets on the sender side until an ACK has
-been received.</li>
-<li>If there is un-ACKed data, buffer, if there is not, send now (because the receiver
-might be waiting for your critical packet!)</li>
-<li>However, for large writes (more than one packet) this can be a problem, because the
-receiver may wait before sending an ACK (ACKs are cumulative, and indicate that all
-packets before the ACK's sequence number have been received).</li>
-<li>And for interactive applications, this isn't great because you care about latency,
-which Nagle penalises (and packet sizes can be small!).</li>
-<li>So often disable Nagling with TCP<sub>NODELAY</sub> socket option.</li>
-</ul></li>
-<li><b>ACKs</b>
-<ul class="org-ul">
-<li>ACKs are cumulative - a sequence number of N means that all packets 0..N have been
-received.</li>
-<li>If a gap in a sequence has been detected, the receiver will retransmit an ACK with the
-highest previously acknowledged sequence number.</li>
-<li>If the receiver receives 3+ ACKs for a sequence number, it will retransmit all packets
-from N + 1 on.</li>
-</ul></li>
+<li>Facebook</li>
+<li>Services such as Facebook need to understand their capacity requirements, bottlenecks and response
+to excess load. Kraken is a system for load-testing Facebook by diverting <b>live traffic</b> to
+clusters or services under test, and also do that safely without putting Facebook at risk. By
+doing so, operators can measure the capacity of a service, improve utilization, and locate
+bottlenecks.</li>
+<li><p>
+<b>Live traffic, not synthetic load</b> - Kraken relies on live traffic to accurately test and
+benchmark Facebook. Synthetic suites such as TPC, YCSB etc are 'shallow', i.e. they don't really
+represent a full suite of realistic use cases.
+</p>
+
+<p>
+An alternative is to use 'shadow' traffic (i.e. replicating identical traffic); however side
+effects from that traffic have to be carefully managed if not idempotent. Most typically they'd be
+stubbed out, but stubbing then means the load is not realistic.
+</p></li>
 </ul>
 </div>
 </div>

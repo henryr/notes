@@ -1,0 +1,17 @@
+#+TITLE: Books
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+
+* *Kraken: Leveraging Live Traffic Tests to Identify and Resolve resource Utilization Bottlenecks in Large-Scale Web Services*
+- Facebook
+- Services such as Facebook need to understand their capacity requirements, bottlenecks and response
+  to excess load. Kraken is a system for load-testing Facebook by diverting *live traffic* to
+  clusters or services under test, and also do that safely without putting Facebook at risk. By
+  doing so, operators can measure the capacity of a service, improve utilization, and locate
+  bottlenecks.
+- *Live traffic, not synthetic load* - Kraken relies on live traffic to accurately test and
+  benchmark Facebook. Synthetic suites such as TPC, YCSB etc are 'shallow', i.e. they don't really
+  represent a full suite of realistic use cases.
+
+  An alternative is to use 'shadow' traffic (i.e. replicating identical traffic); however side
+  effects from that traffic have to be carefully managed if not idempotent. Most typically they'd be
+  stubbed out, but stubbing then means the load is not realistic.
