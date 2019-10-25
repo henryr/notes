@@ -16,4 +16,13 @@ _Facebook_
 
   An alternative is to use 'shadow' traffic (i.e. replicating identical traffic); however side
   effects from that traffic have to be carefully managed if not idempotent. Most typically they'd be
-  stubbed out, but stubbing then means the load is not realistic.
+  stubbed out, but stubbing then means the load is not realistic. (But if traffic was effectively
+  completely isolated then 'namespacing' - changing user IDs so the load is completely isolated -
+  would be effective).
+
+  One inference from this is that FB can consider traffic to be effectively infinite; since
+  diverting live traffic is guaranteed to provide enough load to stress the system under test.
+
+  You also need high confidence in the safety of your experiments if you're going to do it with live traffic.
+
+- *How traffic is routed*

@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2019-10-25 Fri 16:46 -->
+<!-- 2019-10-25 Fri 16:50 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Papers</title>
@@ -235,7 +235,7 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgc1ff47f">1. <b>Kraken: Leveraging Live Traffic Tests to Identify and Resolve resource Utilization Bottlenecks in Large-Scale Web Services</b></a></li>
+<li><a href="#orgbb98cd7">1. <b>Kraken: Leveraging Live Traffic Tests to Identify and Resolve resource Utilization Bottlenecks in Large-Scale Web Services</b></a></li>
 </ul>
 </div>
 </div>
@@ -243,8 +243,8 @@ for the JavaScript code in this tag.
 <span class="underline">Traffic and Load Management</span>
 </p>
 
-<div id="outline-container-orgc1ff47f" class="outline-2">
-<h2 id="orgc1ff47f"><span class="section-number-2">1</span> <b>Kraken: Leveraging Live Traffic Tests to Identify and Resolve resource Utilization Bottlenecks in Large-Scale Web Services</b></h2>
+<div id="outline-container-orgbb98cd7" class="outline-2">
+<h2 id="orgbb98cd7"><span class="section-number-2">1</span> <b>Kraken: Leveraging Live Traffic Tests to Identify and Resolve resource Utilization Bottlenecks in Large-Scale Web Services</b></h2>
 <div class="outline-text-2" id="text-1">
 <p>
 <span class="underline">Facebook</span>
@@ -264,15 +264,28 @@ represent a full suite of realistic use cases.
 <p>
 An alternative is to use 'shadow' traffic (i.e. replicating identical traffic); however side
 effects from that traffic have to be carefully managed if not idempotent. Most typically they'd be
-stubbed out, but stubbing then means the load is not realistic.
+stubbed out, but stubbing then means the load is not realistic. (But if traffic was effectively
+completely isolated then 'namespacing' - changing user IDs so the load is completely isolated -
+would be effective).
+</p>
+
+<p>
+One inference from this is that FB can consider traffic to be effectively infinite; since
+diverting live traffic is guaranteed to provide enough load to stress the system under test.
+</p>
+
+<p>
+You also need high confidence in the safety of your experiments if you're going to do it with live traffic.
 </p></li>
+
+<li><b>How traffic is routed</b></li>
 </ul>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Henry Robinson</p>
-<p class="date">Created: 2019-10-25 Fri 16:46</p>
+<p class="date">Created: 2019-10-25 Fri 16:50</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
