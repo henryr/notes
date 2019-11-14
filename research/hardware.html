@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2019-11-13 Wed 21:00 -->
+<!-- 2019-11-13 Wed 21:05 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Hardware</title>
@@ -235,61 +235,61 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org886d3a0">1. <span class="todo TODO">TODO</span> In-depth OOO execution details</a>
+<li><a href="#org5a9f4f0">1. <span class="todo TODO">TODO</span> In-depth OOO execution details</a>
 <ul>
-<li><a href="#org51233df">1.1. <span class="todo TODO">TODO</span> Tomosuolo algorithm</a></li>
-<li><a href="#org0010e53">1.2. <span class="todo TODO">TODO</span> What's a reservation station?</a></li>
+<li><a href="#orge3d038e">1.1. <span class="todo TODO">TODO</span> Tomosuolo algorithm</a></li>
+<li><a href="#orgb72f72d">1.2. <span class="todo TODO">TODO</span> What's a reservation station?</a></li>
 </ul>
 </li>
-<li><a href="#orge92afb7">2. <b>Modern Microprocessors - A 90-minute guide</b></a>
+<li><a href="#org06430ec">2. <b>Modern Microprocessors - A 90-minute guide</b></a>
 <ul>
-<li><a href="#org1403273">2.1. Pipelining and instruction-level parallelism</a></li>
-<li><a href="#org2b610a0">2.2. Deeper pipelines - <b>superpipelining</b></a></li>
-<li><a href="#org47bd089">2.3. Multiple issue - <b>superscalar</b></a></li>
-<li><a href="#org99804cc">2.4. Explicit parallelism - VLIW</a></li>
-<li><a href="#org3f24440">2.5. Instruction dependencies and latencies</a></li>
-<li><a href="#orgae057ce">2.6. Branches and branch prediction</a></li>
-<li><a href="#org5440756">2.7. Eliminating branches with predication</a></li>
-<li><a href="#orgd8bc1fb">2.8. Instruction scheduling, register renaming &amp; OOO</a></li>
-<li><a href="#org3e47648">2.9. The <span class="underline">Brainiac Debate</span></a></li>
-<li><a href="#org40afebb">2.10. The Power Wall &amp; The ILP Wall</a></li>
-<li><a href="#orgd198b03">2.11. What about x86?</a></li>
-<li><a href="#org57c7990">2.12. Threads - SMT, Hyper-Threading and Multi-Core</a></li>
-<li><a href="#orgb2409b7">2.13. More cores or wider cores?</a></li>
-<li><a href="#orgc79c387">2.14. Data Parallelism - SIMD Vector Instructions</a></li>
-<li><a href="#org2bd3b31">2.15. Memory and the memory wall</a></li>
-<li><a href="#org50dc521">2.16. Caches and the memory hierarchy</a></li>
+<li><a href="#org187ca74">2.1. Pipelining and instruction-level parallelism</a></li>
+<li><a href="#org520c1db">2.2. Deeper pipelines - <b>superpipelining</b></a></li>
+<li><a href="#org272aab4">2.3. Multiple issue - <b>superscalar</b></a></li>
+<li><a href="#orgb42ff8e">2.4. Explicit parallelism - VLIW</a></li>
+<li><a href="#org2c032cb">2.5. Instruction dependencies and latencies</a></li>
+<li><a href="#org55ef93c">2.6. Branches and branch prediction</a></li>
+<li><a href="#orgcb98a95">2.7. Eliminating branches with predication</a></li>
+<li><a href="#org057818d">2.8. Instruction scheduling, register renaming &amp; OOO</a></li>
+<li><a href="#org699305d">2.9. The <span class="underline">Brainiac Debate</span></a></li>
+<li><a href="#orgc2b0767">2.10. The Power Wall &amp; The ILP Wall</a></li>
+<li><a href="#org0da1056">2.11. What about x86?</a></li>
+<li><a href="#org9caf046">2.12. Threads - SMT, Hyper-Threading and Multi-Core</a></li>
+<li><a href="#orga04a3fc">2.13. More cores or wider cores?</a></li>
+<li><a href="#org0f40a5e">2.14. Data Parallelism - SIMD Vector Instructions</a></li>
+<li><a href="#org2c1bdbb">2.15. Memory and the memory wall</a></li>
+<li><a href="#orgb16f9e1">2.16. Caches and the memory hierarchy</a></li>
 </ul>
 </li>
-<li><a href="#org099f9ba">3. <b>FPGA architecture</b></a>
+<li><a href="#orgd3472d9">3. <b>FPGA architecture</b></a>
 <ul>
-<li><a href="#org977fe6c">3.1. Reprogrammable logic gates</a></li>
+<li><a href="#org4ad32d8">3.1. Reprogrammable logic gates</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org886d3a0" class="outline-2">
-<h2 id="org886d3a0"><span class="section-number-2">1</span> <span class="todo TODO">TODO</span> In-depth OOO execution details</h2>
+<div id="outline-container-org5a9f4f0" class="outline-2">
+<h2 id="org5a9f4f0"><span class="section-number-2">1</span> <span class="todo TODO">TODO</span> In-depth OOO execution details</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-org51233df" class="outline-3">
-<h3 id="org51233df"><span class="section-number-3">1.1</span> <span class="todo TODO">TODO</span> Tomosuolo algorithm</h3>
+<div id="outline-container-orge3d038e" class="outline-3">
+<h3 id="orge3d038e"><span class="section-number-3">1.1</span> <span class="todo TODO">TODO</span> Tomosuolo algorithm</h3>
 </div>
-<div id="outline-container-org0010e53" class="outline-3">
-<h3 id="org0010e53"><span class="section-number-3">1.2</span> <span class="todo TODO">TODO</span> What's a reservation station?</h3>
+<div id="outline-container-orgb72f72d" class="outline-3">
+<h3 id="orgb72f72d"><span class="section-number-3">1.2</span> <span class="todo TODO">TODO</span> What's a reservation station?</h3>
 </div>
 </div>
-<div id="outline-container-orge92afb7" class="outline-2">
-<h2 id="orge92afb7"><span class="section-number-2">2</span> <b>Modern Microprocessors - A 90-minute guide</b></h2>
+<div id="outline-container-org06430ec" class="outline-2">
+<h2 id="org06430ec"><span class="section-number-2">2</span> <b>Modern Microprocessors - A 90-minute guide</b></h2>
 <div class="outline-text-2" id="text-2">
 <ul class="org-ul">
 <li><a href="http://www.lighterra.com/papers/modernmicroprocessors/">http://www.lighterra.com/papers/modernmicroprocessors/</a></li>
 </ul>
 </div>
-<div id="outline-container-org1403273" class="outline-3">
-<h3 id="org1403273"><span class="section-number-3">2.1</span> Pipelining and instruction-level parallelism</h3>
+<div id="outline-container-org187ca74" class="outline-3">
+<h3 id="org187ca74"><span class="section-number-3">2.1</span> Pipelining and instruction-level parallelism</h3>
 <div class="outline-text-3" id="text-2-1">
 <ul class="org-ul">
 <li>Instructions executed in pipeline.</li>
@@ -321,8 +321,8 @@ register values into latches, etc.</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org2b610a0" class="outline-3">
-<h3 id="org2b610a0"><span class="section-number-3">2.2</span> Deeper pipelines - <b>superpipelining</b></h3>
+<div id="outline-container-org520c1db" class="outline-3">
+<h3 id="org520c1db"><span class="section-number-3">2.2</span> Deeper pipelines - <b>superpipelining</b></h3>
 <div class="outline-text-3" id="text-2-2">
 <ul class="org-ul">
 <li>Clock speed limited by length of slowest stage in pipeline (so makes sense to make
@@ -338,8 +338,8 @@ throughput</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org47bd089" class="outline-3">
-<h3 id="org47bd089"><span class="section-number-3">2.3</span> Multiple issue - <b>superscalar</b></h3>
+<div id="outline-container-org272aab4" class="outline-3">
+<h3 id="org272aab4"><span class="section-number-3">2.3</span> Multiple issue - <b>superscalar</b></h3>
 <div class="outline-text-3" id="text-2-3">
 <ul class="org-ul">
 <li>Lots of different functional units, not all in use for a given instruction (e.g. ALU,
@@ -352,8 +352,8 @@ for short.</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org99804cc" class="outline-3">
-<h3 id="org99804cc"><span class="section-number-3">2.4</span> Explicit parallelism - VLIW</h3>
+<div id="outline-container-orgb42ff8e" class="outline-3">
+<h3 id="orgb42ff8e"><span class="section-number-3">2.4</span> Explicit parallelism - VLIW</h3>
 <div class="outline-text-3" id="text-2-4">
 <ul class="org-ul">
 <li>Idea is to design instruction set to explicitly group instructions to be executed in
@@ -376,8 +376,8 @@ be moot with it?</li>
 </div>
 </div>
 
-<div id="outline-container-org3f24440" class="outline-3">
-<h3 id="org3f24440"><span class="section-number-3">2.5</span> Instruction dependencies and latencies</h3>
+<div id="outline-container-org2c032cb" class="outline-3">
+<h3 id="org2c032cb"><span class="section-number-3">2.5</span> Instruction dependencies and latencies</h3>
 <div class="outline-text-3" id="text-2-5">
 <ul class="org-ul">
 <li>Why not build 50-stage pipeline which issues 20 instructions per clock?</li>
@@ -389,8 +389,8 @@ instructions would need to be stalled for.</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orgae057ce" class="outline-3">
-<h3 id="orgae057ce"><span class="section-number-3">2.6</span> Branches and branch prediction</h3>
+<div id="outline-container-org55ef93c" class="outline-3">
+<h3 id="org55ef93c"><span class="section-number-3">2.6</span> Branches and branch prediction</h3>
 <div class="outline-text-3" id="text-2-6">
 <ul class="org-ul">
 <li>Another problem for pipelining. CPU doesn't know which instruction is next, so has to
@@ -404,8 +404,8 @@ results)</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org5440756" class="outline-3">
-<h3 id="org5440756"><span class="section-number-3">2.7</span> Eliminating branches with predication</h3>
+<div id="outline-container-orgcb98a95" class="outline-3">
+<h3 id="orgcb98a95"><span class="section-number-3">2.7</span> Eliminating branches with predication</h3>
 <div class="outline-text-3" id="text-2-7">
 <ul class="org-ul">
 <li>If target of branch is basically one instruction, possible to have that instruction
@@ -429,8 +429,8 @@ as only the cmovle has a dependency on either.</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orgd8bc1fb" class="outline-3">
-<h3 id="orgd8bc1fb"><span class="section-number-3">2.8</span> Instruction scheduling, register renaming &amp; OOO</h3>
+<div id="outline-container-org057818d" class="outline-3">
+<h3 id="org057818d"><span class="section-number-3">2.8</span> Instruction scheduling, register renaming &amp; OOO</h3>
 <div class="outline-text-3" id="text-2-8">
 <ul class="org-ul">
 <li>If there are bubbles in the pipeline, what can be done to put those idle stages to good
@@ -457,8 +457,8 @@ speculate down multiple branches (CPUs can typically do just one).</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org3e47648" class="outline-3">
-<h3 id="org3e47648"><span class="section-number-3">2.9</span> The <span class="underline">Brainiac Debate</span></h3>
+<div id="outline-container-org699305d" class="outline-3">
+<h3 id="org699305d"><span class="section-number-3">2.9</span> The <span class="underline">Brainiac Debate</span></h3>
 <div class="outline-text-3" id="text-2-9">
 <ul class="org-ul">
 <li>Is OOO really worth it?
@@ -507,8 +507,8 @@ Athlons at roughly half the clock speed</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org40afebb" class="outline-3">
-<h3 id="org40afebb"><span class="section-number-3">2.10</span> The Power Wall &amp; The ILP Wall</h3>
+<div id="outline-container-orgc2b0767" class="outline-3">
+<h3 id="orgc2b0767"><span class="section-number-3">2.10</span> The Power Wall &amp; The ILP Wall</h3>
 <div class="outline-text-3" id="text-2-10">
 <ul class="org-ul">
 <li>Power usage goes up faster than clock speed</li>
@@ -523,8 +523,8 @@ more power to meet higher switching requirements</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orgd198b03" class="outline-3">
-<h3 id="orgd198b03"><span class="section-number-3">2.11</span> What about x86?</h3>
+<div id="outline-container-org0da1056" class="outline-3">
+<h3 id="org0da1056"><span class="section-number-3">2.11</span> What about x86?</h3>
 <div class="outline-text-3" id="text-2-11">
 <ul class="org-ul">
 <li>x86 instruction set is CISC and messy - complex addressing modes and not many registers
@@ -554,8 +554,8 @@ different execution units independently)</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org57c7990" class="outline-3">
-<h3 id="org57c7990"><span class="section-number-3">2.12</span> Threads - SMT, Hyper-Threading and Multi-Core</h3>
+<div id="outline-container-org9caf046" class="outline-3">
+<h3 id="org9caf046"><span class="section-number-3">2.12</span> Threads - SMT, Hyper-Threading and Multi-Core</h3>
 <div class="outline-text-3" id="text-2-12">
 <ul class="org-ul">
 <li>Since ILP is actually rather limited, maybe we can take instructions from some other
@@ -579,8 +579,8 @@ of memory latencies etc.</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orgb2409b7" class="outline-3">
-<h3 id="orgb2409b7"><span class="section-number-3">2.13</span> More cores or wider cores?</h3>
+<div id="outline-container-orga04a3fc" class="outline-3">
+<h3 id="orga04a3fc"><span class="section-number-3">2.13</span> More cores or wider cores?</h3>
 <div class="outline-text-3" id="text-2-13">
 <ul class="org-ul">
 <li>Why build multiple cores if an SMT design would be better?
@@ -608,8 +608,8 @@ chip.
 </ul>
 </div>
 </div>
-<div id="outline-container-orgc79c387" class="outline-3">
-<h3 id="orgc79c387"><span class="section-number-3">2.14</span> Data Parallelism - SIMD Vector Instructions</h3>
+<div id="outline-container-org0f40a5e" class="outline-3">
+<h3 id="org0f40a5e"><span class="section-number-3">2.14</span> Data Parallelism - SIMD Vector Instructions</h3>
 <div class="outline-text-3" id="text-2-14">
 <ul class="org-ul">
 <li>Along with ILP and SMT, a further way to get parallelism is <b>data parallelism</b>.</li>
@@ -619,8 +619,8 @@ using a single register operation.</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org2bd3b31" class="outline-3">
-<h3 id="org2bd3b31"><span class="section-number-3">2.15</span> Memory and the memory wall</h3>
+<div id="outline-container-org2c1bdbb" class="outline-3">
+<h3 id="org2c1bdbb"><span class="section-number-3">2.15</span> Memory and the memory wall</h3>
 <div class="outline-text-3" id="text-2-15">
 <ul class="org-ul">
 <li>Access to main memory is very slow.</li>
@@ -632,8 +632,8 @@ access main memory.</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org50dc521" class="outline-3">
-<h3 id="org50dc521"><span class="section-number-3">2.16</span> Caches and the memory hierarchy</h3>
+<div id="outline-container-orgb16f9e1" class="outline-3">
+<h3 id="orgb16f9e1"><span class="section-number-3">2.16</span> Caches and the memory hierarchy</h3>
 <div class="outline-text-3" id="text-2-16">
 <ul class="org-ul">
 <li>Caches hide latency. For example, on a core i4:
@@ -650,12 +650,12 @@ access main memory.</li>
 </div>
 
 
-<div id="outline-container-org099f9ba" class="outline-2">
-<h2 id="org099f9ba"><span class="section-number-2">3</span> <b>FPGA architecture</b></h2>
+<div id="outline-container-orgd3472d9" class="outline-2">
+<h2 id="orgd3472d9"><span class="section-number-2">3</span> <b>FPGA architecture</b></h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-org977fe6c" class="outline-3">
-<h3 id="org977fe6c"><span class="section-number-3">3.1</span> Reprogrammable logic gates</h3>
+<div id="outline-container-org4ad32d8" class="outline-3">
+<h3 id="org4ad32d8"><span class="section-number-3">3.1</span> Reprogrammable logic gates</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 Logic gates are look-up tables (truth tables) which can be reprogrammed
@@ -668,7 +668,7 @@ Very high parallelism
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Henry Robinson</p>
-<p class="date">Created: 2019-11-13 Wed 21:00</p>
+<p class="date">Created: 2019-11-13 Wed 21:05</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
