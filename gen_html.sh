@@ -17,9 +17,12 @@ done
 
 rm -f index.md
 
+echo "# Notes" >> index.md
+
 for i in `find ./ -name *.html`; do
     git add $i
-    echo "* [$i]($i)" >> index.md
+    n=`basename $i .html`
+    echo "* [$n]($i)" >> index.md
 done
 
 git diff-index HEAD --quiet --;
